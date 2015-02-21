@@ -1,0 +1,138 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>slf4jLogback</groupId>
+	<artifactId>slf4jLogback</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>slf4jLogback</name>
+	<description>slf4jLogback</description>
+
+	<properties>
+		<!-- Propiedad para encoding independiente de plataforma -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Versión del codigo fuente Java -->
+		<source.version>1.6</source.version>
+		<!-- Versión para compilacion/ejecución Java -->
+		<target.version>1.6</target.version>
+		<!-- Version para maven-compiler-plugin -->
+		<compiler.version>3.1</compiler.version>
+		<!-- Version para el maven-surefire-plugin -->
+		<surefire.version>2.12.2</surefire.version>
+		<!-- Version de SLF4J -->
+		<slf4j.version>1.7.5</slf4j.version>
+		<!-- Version de LogBack -->
+		<logback.version>1.0.13</logback.version>
+		<!-- Version de Groovy -->
+		<groovy.version>2.1.9</groovy.version>
+		<spring.version>4.0.5.RELEASE</spring.version>
+	</properties>
+
+
+
+	<dependencies>
+		<!-- ########## SLF4J para LogBack ########## -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!-- ########## LogBack ########## -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+
+		<!-- ########## Groovy ########## -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>${groovy.version}</version>
+		</dependency>
+
+		<!-- ########## SPRING ########## -->
+		<!-- Core utilities used by other modules. Define this if you use Spring 
+			Utility APIs (org.springframework.core.*/org.springframework.util.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>int</id>
+			<build>
+				<finalName>slf4jLogback</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${compiler.version}</version>
+						<configuration>
+							<source>${source.version}</source>
+							<target>${target.version}</target>
+						</configuration>
+					</plugin>
+					<!-- Surefire plugin to skip JUnit tests -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+							<source>${source.version}</source>
+							<target>${target.version}</target>
+						</configuration>
+						<version>${surefire.version}</version>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<delete
+											file="${project.build.outputDirectory}/application.properties" />
+										<copy file="src/main/resources/cfg/int-application.properties"
+											tofile="${project.build.outputDirectory}/application.properties" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>int</classifier>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+</project>
